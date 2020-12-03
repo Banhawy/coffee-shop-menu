@@ -35,8 +35,7 @@ def get_token_auth_header():
 
     if not auth_header:
         raise AuthError({"code": "missing authorization header",
-                            "description":
-                            "Expected Authorization header"}, 401)
+                        "description": "Expected Authorization header"}, 401)
 
     # Split authorization header string
     header_parts = auth_header.split(' ')
@@ -45,8 +44,7 @@ def get_token_auth_header():
     if len(header_parts) != 2 or not header_parts:
         raise AuthError({
             'code': 'invalid_header',
-            'description': 'Authorization header must be in the format'
-            ' Bearer token'}, 401)
+            'description': 'Authorization header must be in the format "Bearer token"'}, 401)
 
     elif header_parts[0].lower() != 'bearer':
         raise AuthError({
@@ -115,7 +113,7 @@ def verify_decode_jwt(token):
     for key in jwks['keys']:
         if key['kid'] == unverified_header['kid']:
             rsa_key = {
-                'e': key['e']
+                'e': key['e'],
                 'n': key['n'],
                 'kid': key['kid'],
                 'kty': key['kty'],
@@ -135,12 +133,6 @@ def verify_decode_jwt(token):
             )
             return payload
 
-        except:
-
-            raise AuthError({
-                'code': 'invalid header',
-                'description': 'Unable to parse auth token.'
-            }, 400)
 
         except jwt.ExpiredSignatureError:
 
@@ -155,6 +147,13 @@ def verify_decode_jwt(token):
                 'code': 'invalid claims',
                 'description': 'Incorrect claims'
             }, 401)
+
+        except:
+
+            raise AuthError({
+                'code': 'invalid header',
+                'description': 'Unable to parse auth token.'
+            }, 400)
 
     raise AuthError({
         'code': 'invalid header',
