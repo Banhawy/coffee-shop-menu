@@ -57,7 +57,7 @@ def get_token_auth_header():
     return header_parts[1]
 
 '''
-@TODO implement check_permissions(permission, payload) method
+@DONE implement check_permissions(permission, payload) method
     @INPUTS
         permission: string permission (i.e. 'post:drink')
         payload: decoded jwt payload
@@ -68,7 +68,18 @@ def get_token_auth_header():
     return true otherwise
 '''
 def check_permissions(permission, payload):
-    raise Exception('Not Implemented')
+    # Raise error if permissions are not included in payload
+    if 'permissions' not in payload:
+        abort(400)
+
+    # Raise error if given permission string is not in payload's permission
+    if permission not in payload['permissions']:
+        raise AuthError({
+            'code': 'unauthorized',
+            'description': 'Unauthorized action',
+        }, 401)
+
+    return True
 
 '''
 @TODO implement verify_decode_jwt(token) method
