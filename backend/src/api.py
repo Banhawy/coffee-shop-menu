@@ -82,7 +82,7 @@ def create_drink(payload):
     return jsonify({'success': True, 'drinks': [drink.long()]})
 
 '''
-@TODO implement endpoint
+@DONE implement endpoint
     PATCH /drinks/<id>
         where <id> is the existing model id
         it should respond with a 404 error if <id> is not found
@@ -104,7 +104,7 @@ def update_drink(payload, id):
     try:
         req_title = req.get('title')
         req_recipe = req.get('recipe')
-        
+
         if req_title:
             drink.title = req_title
 
@@ -119,7 +119,7 @@ def update_drink(payload, id):
     return jsonify({'success': True, 'drinks': [drink.long()]}), 200
 
 '''
-@TODO implement endpoint
+@DONE implement endpoint
     DELETE /drinks/<id>
         where <id> is the existing model id
         it should respond with a 404 error if <id> is not found
@@ -128,7 +128,20 @@ def update_drink(payload, id):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks/<int:id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def delete_drink(payload, id):
+    drink = Drink.query.filter(Drink.id == id).one_or_none()
 
+    if not drink:
+        abort(404)
+
+    try:
+        drink.delete()
+    except:
+        abort(500)
+
+    return jsonify({'success': True, 'delete': id}), 200
 
 # Error Handling
 '''
