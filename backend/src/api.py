@@ -18,7 +18,7 @@ CORS(app)
 '''
 # db_drop_and_create_all()
 
-## ROUTES
+# ROUTES
 '''
 @TODO implement endpoint
     GET /drinks
@@ -27,6 +27,15 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
+
+@app.route('/drinks')
+def get_drinks():
+    all_drinks = Drink.query.all()
+    print(all_drinks)
+    return jsonify({
+        'success': True
+    })
 
 
 '''
@@ -48,6 +57,7 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+
 
 
 '''
@@ -75,14 +85,14 @@ CORS(app)
 '''
 
 
-## Error Handling
+# Error Handling
 '''
 Example error handling for unprocessable entity
 '''
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 422,
                     "message": "unprocessable"
                     }), 422
@@ -91,7 +101,7 @@ def unprocessable(error):
 @TODO implement error handlers using the @app.errorhandler(error) decorator
     each error handler should return (with approprate messages):
              jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 404,
                     "message": "resource not found"
                     }), 404
@@ -100,11 +110,49 @@ def unprocessable(error):
 
 '''
 @TODO implement error handler for 404
-    error handler should conform to general task above 
+    error handler should conform to general task above
 '''
+@ app.errorhandler(404)
+def bad_request(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": 'Resource Not Found'
+    }), 404
 
 
 '''
 @TODO implement error handler for AuthError
-    error handler should conform to general task above 
+    error handler should conform to general task above
 '''
+@ app.errorhandler(400)
+def bad_request(error):
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": 'Bad Request'
+    }), 400
+
+@ app.errorhandler(401)
+def unauthorized(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": 'Unathorized'
+    }), 401
+
+@ app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify({
+        "success": False,
+        "error": 405,
+        "message": 'Method Not Allowed'
+    }), 405
+
+@ app.errorhandler(500)
+def internal_server_error(error):
+    return jsonify({
+        "success": False,
+        "error": 500,
+        "message": 'Internal Server Error'
+    }), 500
